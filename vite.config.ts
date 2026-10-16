@@ -10,9 +10,10 @@ export default defineConfig(({ mode }) => {
   const env = loadEnv(mode, process.cwd(), "");
   const port = Number(process.env.APP_PORT || env.APP_PORT) || 3005;
 
-  // Di Vercel, variabel VERCEL otomatis terisi -> pakai adapter-vercel.
-  // Di lokal / server Bun -> tetap pakai adapter-bun.
-  const adapter = process.env.VERCEL
+  // Di Vercel, variabel VERCEL otomatis terisi.
+  const isVercel = Boolean(process.env.VERCEL);
+
+  const adapter = isVercel
     ? adapterVercel()
     : adapterBun({
         envPrefix: "APP_",
@@ -20,6 +21,12 @@ export default defineConfig(({ mode }) => {
           port: port,
         },
       });
+
+  // Di Vercel, panggil domain sendiri (/api/v1) yang diteruskan oleh vercel.json
+  // agar tidak terkena CORS. Di tempat lain pakai alamat API langsung.
+  const baseUrl = isVercel
+    ? "/api/v1"
+    : env.VITE_DELCOM_BASEURL || "https://open-api.delcom.org/api/v1";
 
   return {
     plugins: [sveltekit({ adapter }), tailwindcss(), svelteTesting()],
@@ -33,9 +40,7 @@ export default defineConfig(({ mode }) => {
       chunkSizeWarningLimit: 1500,
     },
     define: {
-      DELCOM_BASEURL: JSON.stringify(
-        env.VITE_DELCOM_BASEURL || "https://open-api.delcom.org/api/v1"
-      ),
+      DELCOM_BASEURL: JSON.stringify(baseUrl),
     },
     test: {
       globals: true,
