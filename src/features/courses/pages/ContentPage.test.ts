@@ -40,7 +40,9 @@ describe("ContentPage", () => {
   it("should show a spinner while profile, course or content is missing", () => {
     expect(render(null).wrapper.text()).not.toContain("Pengenalan Routing");
     expect(render(student, null).wrapper.text()).not.toContain("Pengenalan Routing");
-    expect(render(student, course, null).wrapper.text()).not.toContain("Pengenalan Routing");
+    const loading = render(student, course, null).wrapper;
+    expect(loading.text()).not.toContain("Pengenalan Routing");
+    expect(loading.find("h1").text()).toContain("Memuat materi kursus");
   });
 
   it("should load course and content on mount", () => {

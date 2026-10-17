@@ -76,4 +76,12 @@ describe("AuthLayout", () => {
 
     expect(wrapper.text()).toContain("Masuk Akun");
   });
+
+  it("should expose a main landmark and a single level-one heading (accessibility)", () => {
+    const { wrapper } = renderWithProviders(AuthLayout, { route: "/auth/login" });
+
+    expect(wrapper.findAll("main")).toHaveLength(1);
+    expect(wrapper.findAll("h1")).toHaveLength(1);
+    expect(wrapper.find("h1").text()).toContain("Delcom Courses");
+  });
 });

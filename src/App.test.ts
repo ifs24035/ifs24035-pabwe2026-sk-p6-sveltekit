@@ -13,10 +13,13 @@ import UsersPageWrapper from "./routes/users/+page.svelte";
 import { renderWithProviders } from "./test-utils";
 import { mockPageStore, updateMockPage } from "./setupTests";
 import apiHelper from "./helpers/apiHelper";
+import { usersStore } from "./features/users/states/usersStore";
 
 describe("SvelteKit Routes and Layouts", () => {
   beforeEach(() => {
     vi.clearAllMocks();
+    // Hindari request jaringan sungguhan agar hasil test tidak bergantung pada kecepatan koneksi
+    vi.spyOn(usersStore, "asyncSetProfile").mockImplementation(() => Promise.resolve());
     updateMockPage({
       url: new URL("http://localhost/"),
       params: { courseId: "1", contentId: "5" },

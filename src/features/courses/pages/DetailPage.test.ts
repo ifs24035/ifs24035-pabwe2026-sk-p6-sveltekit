@@ -53,6 +53,8 @@ describe("DetailPage (course)", () => {
 
       const { wrapper: w2 } = render(owner, null);
       expect(w2.text()).not.toContain("Belajar SvelteKit");
+      expect(w2.find("h1").text()).toContain("Memuat detail kursus");
+      expect(w2.find('[role="status"]').exists()).toBe(true);
     });
 
     it("should load the course on mount and when courseId changes", async () => {

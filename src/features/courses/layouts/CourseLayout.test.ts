@@ -3,10 +3,13 @@ import CourseLayout from "./CourseLayout.svelte";
 import { renderWithProviders } from "../../../test-utils";
 import apiHelper from "../../../helpers/apiHelper";
 import { mockGoto } from "../../../setupTests";
+import { usersStore } from "../../users/states/usersStore";
 
 describe("CourseLayout", () => {
   beforeEach(() => {
     vi.clearAllMocks();
+    // Hindari request jaringan sungguhan agar hasil test tidak bergantung pada kecepatan koneksi
+    vi.spyOn(usersStore, "asyncSetProfile").mockImplementation(() => Promise.resolve());
   });
 
   it("should redirect to login if access token does not exist", () => {
@@ -113,5 +116,13 @@ describe("CourseLayout", () => {
     await new Promise((r) => setTimeout(r, 10));
 
     expect(mockGoto).toHaveBeenCalledWith("/auth/login");
+  });
+
+  it("should keep a main landmark and a level-one heading while the session is loading (accessibility)", () => {
+    const { wrapper } = renderWithProviders(CourseLayout, { preloadedState: { profile: null } });
+
+    expect(wrapper.findAll("main")).toHaveLength(1);
+    expect(wrapper.find("h1").text()).toContain("Delcom Courses");
+    expect(wrapper.find('[role="status"]').exists()).toBe(true);
   });
 });

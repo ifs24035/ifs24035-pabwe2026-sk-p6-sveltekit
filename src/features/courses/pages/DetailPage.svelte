@@ -171,8 +171,9 @@
 </script>
 
 {#if !profile || !course}
-  <div class="flex flex-col items-center justify-center py-20">
-    <div class="w-8 h-8 border-4 border-indigo-600 border-t-transparent rounded-full animate-spin"></div>
+  <div class="flex flex-col items-center justify-center py-20" role="status">
+    <h1 class="sr-only">Memuat detail kursus</h1>
+    <div class="w-8 h-8 border-4 border-indigo-600 border-t-transparent rounded-full animate-spin" aria-hidden="true"></div>
   </div>
 {:else}
   <div class="space-y-6 max-w-4xl mx-auto animate-in fade-in duration-300">
